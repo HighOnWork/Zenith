@@ -15,4 +15,5 @@ class FileManagerApp:
         return defaultOption
 
     def changingTheme(self, theme):
-        self.root.config(bg=theme["background"], fg=theme["foreground"])
+        print(theme)
+        #self.root.config(bg=theme["background"], fg=theme["foreground"])
