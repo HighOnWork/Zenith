@@ -1,6 +1,8 @@
 import tkinter as tk
 from theme import Theme
 
+stored_exitButton = None
+
 width = 800
 height = 600
 class FileManagerApp:
@@ -30,11 +32,8 @@ class FileManagerApp:
         # Removing the title bar and borders of the window to create a frameless window
         self.root.overrideredirect(True)
 
-        ##################################TEMP#################################
-        tk.Button(self.canvas,
-                  text="Exit",
-                  command=self.root.destroy).grid(row=3, column=2, sticky='s', padx=10, pady=10)
-        #######################################################################
+        self.title_bar = tk.Frame(self.canvas, bg="gray", relief='raised', bd=1)
+
 
         #Initialize the theme from the theme module
         self.theme = Theme()
@@ -43,17 +42,33 @@ class FileManagerApp:
         '''
         Creating a Custom title bar for Zenith and appointing mouse buttons for it 
         '''
-        title_bar = tk.Frame(self.canvas, bg="gray", relief='raised', bd=1)
-        title_bar.grid_columnconfigure(0, weight=1)
-        title_bar.grid(row=0, column=0, columnspan=3, sticky='ew')
+        self.title_bar.grid_columnconfigure(0, weight=1)
+        self.title_bar.grid(row=0, column=0, columnspan=3, sticky='ew')
 
-        title_label = tk.Label(title_bar, text="Zenth", bg="gray", fg="white")
+        title_label = tk.Label(self.title_bar, text="Zenth", bg="gray", fg="white")
         title_label.grid(row=0, column=0, sticky='w', padx=10)
 
-        title_bar.bind("<Button-1>", self.start_move)
-        title_bar.bind("<B1-Motion>", self.do_move)
+        self.title_bar.bind("<Button-1>", self.start_move)
+        self.title_bar.bind("<B1-Motion>", self.do_move)
         title_label.bind("<Button-1>", self.start_move)
         title_label.bind("<B1-Motion>", self.do_move)
+
+    #############################################TASKBAR BUTTONS###########################################################
+    def exitButton(self):
+        '''
+        The exit button for the title bar
+        '''
+        btn_img = self.convertImage(file_path="./Assets/button_shrinked.png")
+        
+        exit_button = tk.Button(
+            master=self.title_bar,
+            image=btn_img,
+            command=self.root.destroy
+        )
+        
+        exit_button.image = btn_img 
+        
+        exit_button.grid(row=0, column=1, sticky='w', padx=5)
     
     def settingsButton(self):
         '''
@@ -104,6 +119,14 @@ class FileManagerApp:
         '''
         selectedTheme = theme.get().capitalize()
         self.canvas.configure(bg=self.theme.themes[selectedTheme]["background"])
+
+    #############################################IMAGE CONVERSION###########################################################
+    def convertImage(self, file_path):
+        '''
+        Converts a normal image into a PhotoImage so it can be used by tkinter.
+        '''
+        converted_photo = tk.PhotoImage(file=file_path)
+        return converted_photo
 
     
     
